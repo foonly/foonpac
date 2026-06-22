@@ -41,7 +41,7 @@ func GetDeclaredPackages(hostname string, configDir string) ([]string, error) {
 	packageMap := make(map[string]bool)
 	for _, group := range groups {
 		groupPath := filepath.Join(configDir, "groups", group+".txt")
-		packages, err := readGroupFile(groupPath)
+		packages, err := ReadGroupFile(groupPath)
 		if err != nil {
 			if os.IsNotExist(err) {
 				fmt.Fprintf(os.Stderr, "Warning: group file not found: %s\n", groupPath)
@@ -62,7 +62,7 @@ func GetDeclaredPackages(hostname string, configDir string) ([]string, error) {
 	return allPackages, nil
 }
 
-func readGroupFile(path string) ([]string, error) {
+func ReadGroupFile(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -84,6 +84,23 @@ func readGroupFile(path string) ([]string, error) {
 	}
 
 	return packages, nil
+}
+
+func WriteGroupFile(path string, packages []string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for _, pkg := range packages {
+		_, err := writer.WriteString(pkg + "\n")
+		if err != nil {
+			return err
+		}
+	}
+	return writer.Flush()
 }
 
 func GetConfigDir() string {

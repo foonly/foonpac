@@ -31,14 +31,14 @@ package3
 	}
 
 	want := []string{"package1", "package2", "package3"}
-	got, err := readGroupFile(groupPath)
+	got, err := ReadGroupFile(groupPath)
 	if err != nil {
-		t.Errorf("readGroupFile() error = %v", err)
+		t.Errorf("ReadGroupFile() error = %v", err)
 		return
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("readGroupFile() = %v, want %v", got, want)
+		t.Errorf("ReadGroupFile() = %v, want %v", got, want)
 	}
 }
 
