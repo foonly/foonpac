@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -119,7 +120,8 @@ func cleanGroups(configDir string) {
 		sort.Strings(packages)
 		var newContent strings.Builder
 		for _, pkg := range packages {
-			newContent.WriteString(pkg + "\n")
+			newContent.WriteString(pkg)
+			newContent.WriteString("\n")
 		}
 
 		if string(originalContent) == newContent.String() {
@@ -160,11 +162,9 @@ func addPackageToGroup(groupName string, packageName string, configDir string) {
 	}
 
 	// Check if package already exists
-	for _, pkg := range packages {
-		if pkg == packageName {
-			fmt.Printf("Package %s already in group %s\n", packageName, groupName)
-			return
-		}
+	if slices.Contains(packages, packageName) {
+		fmt.Printf("Package %s already in group %s\n", packageName, groupName)
+		return
 	}
 
 	packages = append(packages, packageName)
